@@ -14,22 +14,15 @@ namespace Prophecy\Comparator;
 use Prophecy\Prophecy\ProphecyInterface;
 use SebastianBergmann\Comparator\ObjectComparator;
 
-/**
- * @final
- */
 class ProphecyComparator extends ObjectComparator
 {
-    public function accepts($expected, $actual): bool
+    public function accepts($expected, $actual)
     {
         return is_object($expected) && is_object($actual) && $actual instanceof ProphecyInterface;
     }
 
-    /**
-     * @phpstan-param list<array{object, object}> $processed
-     */
-    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false, array &$processed = array()): void
+    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false, array &$processed = array())
     {
-        \assert($actual instanceof ProphecyInterface);
         parent::assertEquals($expected, $actual->reveal(), $delta, $canonicalize, $ignoreCase, $processed);
     }
 }

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Exports\ExportCategories;
+
+use App\Customer;
+use App\Exports\ExportCustomers;
+use App\Imports\CustomersImport;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Datatables;
+use Yajra\DataTables\DataTables;
+use Excel;
 use PDF;
 
-class CategoryController extends Controller
+class CustomerController extends Controller
 {
     public function __construct()
     {
@@ -21,8 +24,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        return view('categories.index');
+        $customers = Customer::all();
+        return view('customers.index');
     }
 
     /**
@@ -44,15 +47,19 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-           'name'   => 'required|string|min:2'
+            'nama'      => 'required',
+            'alamat'    => 'required',
+            'email'     => 'required|unique:customers',
+            'telepon'   => 'required',
         ]);
 
-        Category::create($request->all());
+        Customer::create($request->all());
 
         return response()->json([
-           'success'    => true,
-           'message'    => 'Categories Created'
+            'success'    => true,
+            'message'    => 'Customer Created'
         ]);
+
     }
 
     /**
@@ -74,8 +81,8 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $category = Category::find($id);
-        return $category;
+        $customer = Customer::find($id);
+        return $customer;
     }
 
     /**
@@ -88,16 +95,19 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name'   => 'required|string|min:2'
+            'nama'      => 'required|string|min:2',
+            'alamat'    => 'required|string|min:2',
+            'email'     => 'required|string|email|max:255|unique:customers',
+            'telepon'   => 'required|string|min:2',
         ]);
 
-        $category = Category::findOrFail($id);
+        $customer = Customer::findOrFail($id);
 
-        $category->update($request->all());
+        $customer->update($request->all());
 
         return response()->json([
             'success'    => true,
-            'message'    => 'Categories Update'
+            'message'    => 'Customer Updated'
         ]);
     }
 
@@ -109,35 +119,53 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        Category::destroy($id);
+        Customer::destroy($id);
 
         return response()->json([
             'success'    => true,
-            'message'    => 'Categories Delete'
+            'message'    => 'Customer Delete'
         ]);
     }
 
-    public function apiCategories()
+    public function apiCustomers()
     {
-        $categories = Category::all();
+        $customer = Customer::all();
 
-        return Datatables::of($categories)
-            ->addColumn('action', function($categories){
-                return '<a onclick="editForm('. $categories->id .')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> ' .
-                    '<a onclick="deleteData('. $categories->id .')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
+        return Datatables::of($customer)
+            ->addColumn('action', function($customer){
+                return '<a onclick="editForm('. $customer->id .')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> ' .
+                    '<a onclick="deleteData('. $customer->id .')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
             })
             ->rawColumns(['action'])->make(true);
     }
 
-    public function exportCategoriesAll()
+    public function ImportExcel(Request $request)
     {
-        $categories = Category::all();
-        $pdf = PDF::loadView('categories.CategoriesAllPDF',compact('categories'));
-        return $pdf->download('categories.pdf');
+        //Validasi
+        $this->validate($request, [
+            'file' => 'required|mimes:xls,xlsx'
+        ]);
+
+        if ($request->hasFile('file')) {
+            //UPLOAD FILE
+            $file = $request->file('file'); //GET FILE
+            Excel::import(new CustomersImport, $file); //IMPORT FILE
+            return redirect()->back()->with(['success' => 'Upload file data customers !']);
+        }
+
+        return redirect()->back()->with(['error' => 'Please choose file before!']);
+    }
+
+
+    public function exportCustomersAll()
+    {
+        $customers = Customer::all();
+        $pdf = PDF::loadView('customers.CustomersAllPDF',compact('customers'));
+        return $pdf->download('customers.pdf');
     }
 
     public function exportExcel()
     {
-        return (new ExportCategories())->download('categories.xlsx');
+        return (new ExportCustomers)->download('customers.xlsx');
     }
 }
