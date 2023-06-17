@@ -54,10 +54,56 @@
     <!-- ./col -->
 </div>
 
+<div class="row">
+    
+    <!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-purple">
+            <div class="inner">
+                <h3>{{ \App\Supplier::count() }}<sup style="font-size: 20px"></sup></h3>
 
+                <p>Supplier</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-signal"></i>
+            </div>
+            <a href="{{ route('suppliers.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-maroon">
+            <div class="inner">
+                <h3>{{ \App\Product_Masuk::count() }}</h3>
+
+                <p>Total Purchase</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-cart-plus"></i>
+            </div>
+            <a href="{{ route('productsIn.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-primary">
+            <div class="inner">
+                <h3>{{ \App\Product_Keluar::count()  }}</h3>
+
+                <p>Total Outgoing</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-minus"></i>
+            </div>
+            <a href="{{ route('productsOut.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>    
     <!-- ./col -->
     <div id="container" class=" col-xs-6"></div>
-</div><!-- Log on to codeastro.com for more projects! -->
+</div>
 
 @endsection
 
