@@ -35,6 +35,12 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/exportCustomersAll', 'CustomerController@exportCustomersAll')->name('exportPDF.customersAll');
 	Route::get('/exportCustomersAllExcel', 'CustomerController@exportExcel')->name('exportExcel.customersAll');
 
+	Route::resource('sales', 'SaleController');
+	Route::get('/apiSales', 'SaleController@apiSales')->name('api.sales');
+	Route::post('/importSales', 'SaleController@ImportExcel')->name('import.sales');
+	Route::get('/exportSalesAll', 'SaleController@exportSalesAll')->name('exportPDF.salesAll');
+	Route::get('/exportSalesAllExcel', 'SaleController@exportExcel')->name('exportExcel.salesAll');
+	
 	Route::resource('suppliers', 'SupplierController');
 	Route::get('/apiSuppliers', 'SupplierController@apiSuppliers')->name('api.suppliers');
 	Route::post('/importSuppliers', 'SupplierController@ImportExcel')->name('import.suppliers');
