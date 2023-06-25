@@ -39,7 +39,7 @@
      <!-- ./col -->
      <div class="col-lg-3 col-xs-6">
         <!-- small box -->
-        <div class="small-box bg-yellow">
+        <div class="small-box bg-aqua">
             <div class="inner">
                 <h3>{{ \App\Product::count() }}</h3>
                 <p>Product</p>
@@ -52,7 +52,7 @@
     </div>
      <div class="col-lg-3 col-xs-6">
         <!-- small box -->
-        <div class="small-box bg-red">
+        <div class="small-box bg-aqua">
             <div class="inner">
                 <h3>{{ \App\Customer::count() }}</h3>
 
@@ -72,7 +72,7 @@
     <!-- ./col -->
     <div class="col-lg-3 col-xs-6">
         <!-- small box -->
-        <div class="small-box bg-purple">
+        <div class="small-box bg-aqua">
             <div class="inner">
                 <h3>{{ \App\Supplier::count() }}<sup style="font-size: 20px"></sup></h3>
 
@@ -87,7 +87,7 @@
     <!-- ./col -->
     <div class="col-lg-3 col-xs-6">
         <!-- small box -->
-        <div class="small-box bg-maroon">
+        <div class="small-box bg-aqua">
             <div class="inner">
                 <h3>{{ \App\Product_Masuk::count() }}</h3>
 
@@ -102,7 +102,7 @@
     <!-- ./col -->
     <div class="col-lg-3 col-xs-6">
         <!-- small box -->
-        <div class="small-box bg-primary">
+        <div class="small-box bg-aqua">
             <div class="inner">
                 <h3>{{ \App\Product_Keluar::count()  }}</h3>
 
