@@ -9,6 +9,8 @@ use Excel;
 use Illuminate\Http\Request;
 use PDF;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Auth;
+
 
 class UserController extends Controller {
 	public function __construct() {
@@ -23,6 +25,31 @@ class UserController extends Controller {
 		$users = User::all();
 		return view('user.index');
 	}
+
+	public function indexJwt()
+   {
+       $users = User::all();
+ 
+       return $users;
+   }
+   public function storeJwt(Request $request)
+   {
+	   $request->validate([
+		   'name' => 'required',
+		   'email' => 'required|email|unique:users',
+		   'password' => 'required|min:6',
+		   'role' => 'required',
+	   ]);
+
+	   $user = new User();
+	   $user->name = $request->name;
+	   $user->email = $request->email;
+	   $user->password = Hash::make($request->password);
+	   $user->role = $request->role;
+	   $user->save();
+
+	   return response()->json(['message' => 'User registered successfully'], 201);
+   }
 
 	/**
 	 * Show the form for creating a new resource.
@@ -148,5 +175,32 @@ class UserController extends Controller {
 
 	public function exportExcel() {
 		return (new ExportSuppliers)->download('suppliers.xlsx');
+	}
+
+	 /**
+    * Get the identifier that will be stored in the subject claim of the JWT.
+    *
+    * @return mixed
+    */
+	public function getJWTIdentifier()
+	{
+		return $this->getKey();
+	}
+  
+	/**
+	 * Return a key value array, containing any custom claims to be added to the JWT.
+	 *
+	 * @return array
+	 */
+	public function getJWTCustomClaims()
+	{
+		return [];
+	}
+  
+	public function setPasswordAttribute($password)
+	{
+		if ( !empty($password) ) {
+			$this->attributes['password'] = bcrypt($password);
+		}
 	}
 }
