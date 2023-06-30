@@ -35,4 +35,8 @@ class ProductControllerApi extends Controller
             'Product' => $Product
         ], 201);
     }
+    public function getProduct(){
+        $Product = Product::orderBy("id", "desc")->get();
+        return Helper::toJson($Product);
+    }
 }

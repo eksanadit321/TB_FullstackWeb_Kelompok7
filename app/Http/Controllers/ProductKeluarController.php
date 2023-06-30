@@ -59,7 +59,7 @@ class ProductKeluarController extends Controller
            'product_id'     => 'required',
            'customer_id'    => 'required',
            'qty'            => 'required',
-           'tanggal'           => 'required'
+           'tanggal'        => 'required'
         ]);
 
         Product_Keluar::create($request->all());

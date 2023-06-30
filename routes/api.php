@@ -50,6 +50,14 @@ Route::group([
     Route::get('supplier', 'SupplierControllerApi@getSupplier');
 
     Route::get('customer', 'CustomerControllerApi@getCustomer');
+    
+    Route::get('productKeluar', 'ProductKeluarControllerApi@getProductKeluar');
+    Route::post('addProductKeluar', 'ProductKeluarControllerApi@addProductKeluar');
+
+    Route::get('productMasuk', 'ProductMasukControllerApi@getProductMasuk');
+    Route::post('addProductMasuk', 'ProductMasukControllerApi@addProductMasuk');
+    
    
+
     
 });
