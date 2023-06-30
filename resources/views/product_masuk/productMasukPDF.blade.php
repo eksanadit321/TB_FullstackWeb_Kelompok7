@@ -83,7 +83,7 @@
     </table> -->
     <table border="0" width="80%">
         <tr align="right">
-            <td>I M S</td>
+            <td>KELOMPOK 7</td>
         </tr>
     </table>
 </div>

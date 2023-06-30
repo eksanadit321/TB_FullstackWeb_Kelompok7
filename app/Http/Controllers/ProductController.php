@@ -118,7 +118,7 @@ class ProductController extends Controller
             'nama'          => 'required|string',
             'harga'         => 'required',
             'qty'           => 'required',
-//            'image'         => 'required',
+           'image'         => 'required',
             'category_id'   => 'required',
         ]);
 

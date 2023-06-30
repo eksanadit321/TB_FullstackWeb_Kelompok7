@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Product;
-use App\Supplier;
-use App\Product_Masuk;
-// use Barryvdh\DomPDF\PDF;
+use App\Category;
+use App\Customer;
+use App\Product_Keluar;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
-use App\Exports\ExportProdukMasuk;
-use PDF;
+use App\Exports\ExportProdukKeluar;
 
 
-class ProductMasukController extends Controller
+class ProductKeluarController extends Controller
 {
     public function __construct()
     {
@@ -30,12 +29,12 @@ class ProductMasukController extends Controller
             ->get()
             ->pluck('nama','id');
 
-        $suppliers = Supplier::orderBy('nama','ASC')
+        $customers = Customer::orderBy('nama','ASC')
             ->get()
             ->pluck('nama','id');
 
-        $invoice_data = Product_Masuk::all();
-        return view('product_masuk.index', compact('products','suppliers','invoice_data'));
+        $invoice_data = Product_Keluar::all();
+        return view('product_keluar.index', compact('products','customers', 'invoice_data'));
     }
 
     /**
@@ -57,21 +56,21 @@ class ProductMasukController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'product_id'     => 'required',
-            'supplier_id'    => 'required',
-            'qty'            => 'required',
-            'tanggal'        => 'required'
+           'product_id'     => 'required',
+           'customer_id'    => 'required',
+           'qty'            => 'required',
+           'tanggal'           => 'required'
         ]);
 
-        Product_Masuk::create($request->all());
+        Product_Keluar::create($request->all());
 
         $product = Product::findOrFail($request->product_id);
-        $product->qty += $request->qty;
+        $product->qty -= $request->qty;
         $product->save();
 
         return response()->json([
             'success'    => true,
-            'message'    => 'Products In Created'
+            'message'    => 'Products Out Created'
         ]);
 
     }
@@ -95,8 +94,8 @@ class ProductMasukController extends Controller
      */
     public function edit($id)
     {
-        $product_masuk = Product_Masuk::find($id);
-        return $product_masuk;
+        $product_keluar = Product_Keluar::find($id);
+        return $product_keluar;
     }
 
     /**
@@ -110,21 +109,21 @@ class ProductMasukController extends Controller
     {
         $this->validate($request, [
             'product_id'     => 'required',
-            'supplier_id'    => 'required',
+            'customer_id'    => 'required',
             'qty'            => 'required',
-            'tanggal'        => 'required'
+            'tanggal'           => 'required'
         ]);
 
-        $product_masuk = Product_Masuk::findOrFail($id);
-        $product_masuk->update($request->all());
+        $product_keluar = Product_Keluar::findOrFail($id);
+        $product_keluar->update($request->all());
 
         $product = Product::findOrFail($request->product_id);
-        $product->qty += $request->qty;
+        $product->qty -= $request->qty;
         $product->update();
 
         return response()->json([
             'success'    => true,
-            'message'    => 'Product In Updated'
+            'message'    => 'Product Out Updated'
         ]);
     }
 
@@ -136,52 +135,50 @@ class ProductMasukController extends Controller
      */
     public function destroy($id)
     {
-        Product_Masuk::destroy($id);
+        Product_Keluar::destroy($id);
 
         return response()->json([
             'success'    => true,
-            'message'    => 'Products In Deleted'
+            'message'    => 'Products Delete Deleted'
         ]);
     }
 
 
 
-    public function apiProductsIn(){
-        $product = Product_Masuk::all();
+    public function apiProductsOut(){
+        $product = Product_Keluar::all();
 
         return Datatables::of($product)
             ->addColumn('products_name', function ($product){
                 return $product->product->nama;
             })
-            ->addColumn('supplier_name', function ($product){
-                return $product->supplier->nama;
+            ->addColumn('customer_name', function ($product){
+                return $product->customer->nama;
             })
             ->addColumn('action', function($product){
-                return '<a onclick="editForm('. $product->id .')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> ' .
-                    '<a onclick="deleteData('. $product->id .')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a> ';
-
-
+                return'<a onclick="editForm('. $product->id .')" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i> Edit</a> ' .
+                    '<a onclick="deleteData('. $product->id .')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i> Delete</a>';
             })
-            ->rawColumns(['products_name','supplier_name','action'])->make(true);
+            ->rawColumns(['products_name','customer_name','action'])->make(true);
 
     }
 
-    public function exportProductMasukAll()
+    public function exportProductKeluarAll()
     {
-        $product_masuk = Product_Masuk::all();
-        $pdf = PDF::loadView('product_masuk.productMasukAllPDF',compact('product_masuk'));
-        return $pdf->download('product_enter.pdf');
+        $product_keluar = Product_Keluar::all();
+        $pdf = PDF::loadView('product_keluar.productKeluarAllPDF',compact('product_keluar'));
+        return $pdf->download('product_out.pdf');
     }
 
-    public function exportProductMasuk($id)
+    public function exportProductKeluar($id)
     {
-        $product_masuk = Product_Masuk::findOrFail($id);
-        $pdf = PDF::loadView('product_masuk.productMasukPDF', compact('product_masuk'));
-        return $pdf->download($product_masuk->id.'_product_enter.pdf');
+        $product_keluar = Product_Keluar::findOrFail($id);
+        $pdf = PDF::loadView('product_keluar.productKeluarPDF', compact('product_keluar'));
+        return $pdf->download($product_keluar->id.'_product_out.pdf');
     }
 
     public function exportExcel()
     {
-        return (new ExportProdukMasuk)->download('product_masuk.xlsx');
+        return (new ExportProdukKeluar)->download('product_keluar.xlsx');
     }
 }
